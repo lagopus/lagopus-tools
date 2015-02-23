@@ -1,0 +1,41 @@
+- name: Install packages for Lagopus
+  apt:
+    name={{ item }}
+    state=present
+  with_items:
+    - git
+    - build-essential
+    - libexpat-dev
+    - libgmp-dev
+    - libncurses-dev
+    - libssl-dev
+    - libpcap-dev
+    - byacc
+    - flex
+    - libreadline-dev
+    - python-dev
+    - python-pastedeploy
+    - python-paste
+    - python-twisted
+  sudo: yes
+- name: Clone Lagopus from Github
+  git:
+    repo=https://github.com/lagopus/lagopus
+    dest={{ work_dir }}/lagopus
+  register: clone_lagopus
+- name: Check if lagopus exists
+  stat: path=/usr/local/sbin/lagopus
+  register: lagopus_exists
+- shell:
+    ./configure --with-dpdk-dir={{ rte_sdk }}
+    chdir={{ work_dir }}/lagopus
+  when: (lagopus_exists.stat.md5 is not defined) or (install_dpdk|changed)
+- shell:
+    make 
+    chdir={{ work_dir }}/lagopus
+  when: (lagopus_exists.stat.md5 is not defined) or (install_dpdk|changed)
+- shell:
+    make install
+    chdir={{ work_dir }}/lagopus
+  sudo: yes
+  when: (lagopus_exists.stat.md5 is not defined) or (install_dpdk|changed)

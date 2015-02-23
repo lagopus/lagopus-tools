@@ -1,0 +1,74 @@
+- include: setup.yml
+
+- hosts: target1
+  vars_files:
+    - vars_ryu.yml
+    - vars.yml
+  sudo: yes
+  remote_user: "{{ user }}"
+  tasks:
+    - shell: echo > /usr/local/etc/lagopus/lagopus.conf
+    - shell: echo "{{ item }}" >> /usr/local/etc/lagopus/lagopus.conf
+      with_items:
+        - "interface {"
+        - "	ethernet {"
+        - "		eth0;"
+        - "		eth1;"
+        - "		eth2;"
+        - "	}"
+        - "}"
+        - "bridge-domains {"
+        - "	br0 {"
+        - "		dpid 0.00:00:00:00:00:01;"
+        - "		port {"
+        - "			eth0;"
+        - "			eth1;"
+        - "			eth2;"
+        - "		}"
+        - "		controller {"
+        - "			127.0.0.1;"
+        - "		}"
+        - "	}"
+        - "}"
+
+- hosts: target2
+  vars_files:
+    - vars_ryu.yml
+    - vars.yml
+  sudo: yes
+  remote_user: "{{ user }}"
+  tasks:
+    - shell: echo > /usr/local/etc/lagopus/lagopus.conf
+    - shell: echo "{{ item }}" >> /usr/local/etc/lagopus/lagopus.conf
+      with_items:
+        - "interface {"
+        - "	ethernet {"
+        - "		eth0;"
+        - "		eth1;"
+        - "		eth2;"
+        - "	}"
+        - "}"
+        - "bridge-domains {"
+        - "	br0 {"
+        - "		dpid 0.00:00:00:00:00:02;"
+        - "		port {"
+        - "			eth0;"
+        - "			eth1;"
+        - "			eth2;"
+        - "		}"
+        - "		controller {"
+        - "			{{ groups['target1'][0] }};"
+        - "		}"
+        - "	}"
+        - "}"
+
+- hosts: all
+  vars_files:
+    - vars_ryu.yml
+    - vars.yml
+    - vars_dpdk.yml
+  sudo: no
+  remote_user: "{{ user }}"
+  tasks:
+    - include: tasks/bind.yml
+    - include: tasks/run_lagopus.yml

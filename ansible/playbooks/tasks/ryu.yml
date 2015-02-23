@@ -1,0 +1,21 @@
+- name: Install packages for Ryu
+  apt:
+    name={{ item }}
+    state=present
+  with_items:
+    - python-setuptools
+    - python-pip
+    - python-dev
+    - libxml2-dev
+    - libxslt-dev
+  sudo: yes
+- name: Install Ryu with pip
+  pip:
+    name=ryu 
+    state=present
+  sudo: yes
+- name: Update six to the latest version
+  pip:
+    name=six
+    state=latest
+  sudo: yes

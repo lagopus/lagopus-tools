@@ -1,0 +1,6 @@
+- shell: echo 256 >  /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages 
+  sudo: yes
+- shell: mkdir -p /mnt/huge
+  sudo: yes
+- shell: mount -t hugetlbfs nodev /mnt/huge
+  sudo: yes 

@@ -1,0 +1,5 @@
+- name: Run Lagopus
+  shell: 
+    lagopus -l /tmp/lagopus.log -- -c3 -n1 -- -p7
+    chdir=/usr/local/etc/lagopus
+  sudo: yes

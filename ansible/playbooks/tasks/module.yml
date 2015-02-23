@@ -1,0 +1,8 @@
+- shell: "modprobe uio"
+  sudo: yes
+- shell: "insmod {{ rte_sdk }}/{{ rte_target }}/kmod/igb_uio.ko"
+  ignore_errors: yes
+  sudo: yes
+- shell: "insmod {{ rte_sdk }}/{{ rte_target }}/kmod/rte_kni.ko"
+  ignore_errors: yes
+  sudo: yes

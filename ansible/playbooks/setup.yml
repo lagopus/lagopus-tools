@@ -1,0 +1,17 @@
+ 
+- hosts: all
+  vars_files:
+    - vars.yml
+    - vars_dpdk.yml
+  sudo: no
+  remote_user: "{{ user }}"
+  tasks:
+    - name: Update apt
+      apt: update_cache=yes cache_valid_time=3600
+      sudo: yes
+    - include: tasks/dpdk.yml
+    - include: tasks/hugepages.yml
+    - include: tasks/module.yml
+    - include: tasks/lagopus.yml
+    - include: tasks/ryu.yml
+

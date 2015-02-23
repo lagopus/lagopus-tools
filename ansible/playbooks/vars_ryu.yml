@@ -1,0 +1,5 @@
+networks:
+  - iface: eth1
+  - iface: eth2
+  - iface: eth3
+

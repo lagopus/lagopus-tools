@@ -1,0 +1,8 @@
+- shell: "ifconfig {{ item.iface }} down"
+  with_items: networks
+  ignore_errors: yes
+  sudo: yes
+- shell: "{{ rte_sdk }}/tools/dpdk_nic_bind.py -b igb_uio {{ item.iface }}"
+  with_items: networks
+  ignore_errors: yes
+  sudo: yes

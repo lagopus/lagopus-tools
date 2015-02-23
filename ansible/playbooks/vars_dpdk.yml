@@ -1,0 +1,5 @@
+dpdk_version: "dpdk-1.7.1"
+rte_sdk: "{{ work_dir }}/{{ dpdk_version }}"
+rte_target: "x86_64-native-linuxapp-gcc" 
+dpdk_url: "http://dpdk.org/browse/dpdk/snapshot/{{ dpdk_version }}.zip"
+dpdk_md5sum: 64769f27a7c053058915d68a1757e93f
