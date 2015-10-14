@@ -6,35 +6,20 @@
     name={{ item }}
     state=present
   with_items:
+    - git
     - make
     - coreutils
     - gcc
     - binutils
     - linux-headers-{{ uname.stdout }}
-    - unzip
   sudo: yes
-- name: Download Intel DPDK
-  get_url:
-    url={{ dpdk_url }}
-    dest={{ rte_sdk }}.zip
+- name: Download DPDK
+  git:
+    repo=http://dpdk.org/git/dpdk
+    dest={{ rte_sdk }}
+    version={{ dpdk_version }}
   register: download_dpdk
-- name: Check if download successed
-  stat: path={{ rte_sdk }}.zip
-  register: download_successed
-- fail: msg="DPDK file is broken."
-  when: download_successed.stat.md5 != dpdk_md5sum
-- name: Check if dpdk installed
-  stat: path={{ rte_sdk }}/{{ rte_target }}/kmod/igb_uio.ko
-  register: dpdk_exists
-- name: Unzip Intel DPDK
-  shell: unzip -o {{ rte_sdk }}.zip -d {{ work_dir }}
-  when: (dpdk_exists.stat.md5 is not defined) or (download_dpdk|changed)
-- shell:
-    make config T={{ rte_target }}
-    chdir={{ rte_sdk }}
-  when: (dpdk_exists.stat.md5 is not defined) or (download_dpdk|changed)
 - shell:
     make install T={{ rte_target }}
     chdir={{ rte_sdk }}
-  when: (dpdk_exists.stat.md5 is not defined) or (download_dpdk|changed)
   register: install_dpdk
