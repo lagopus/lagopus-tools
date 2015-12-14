@@ -7,29 +7,19 @@
   sudo: yes
   remote_user: "{{ user }}"
   tasks:
-    - shell: echo > /usr/local/etc/lagopus/lagopus.conf
-    - shell: echo "{{ item }}" >> /usr/local/etc/lagopus/lagopus.conf
+    - shell: echo > /usr/local/etc/lagopus/lagopus.dsl
+    - shell: echo "{{ item }}" >> /usr/local/etc/lagopus/lagopus.dsl
       with_items:
-        - "interface {"
-        - "	ethernet {"
-        - "		eth0;"
-        - "		eth1;"
-        - "		eth2;"
-        - "	}"
-        - "}"
-        - "bridge-domains {"
-        - "	br0 {"
-        - "		dpid 0.00:00:00:00:00:01;"
-        - "		port {"
-        - "			eth0;"
-        - "			eth1;"
-        - "			eth2;"
-        - "		}"
-        - "		controller {"
-        - "			127.0.0.1;"
-        - "		}"
-        - "	}"
-        - "}"
+        - "channel channel01 create -dst-addr 127.0.0.1 -protocol tcp"
+        - "controller controller01 create -channel channel01 -role equal -connection-type main"
+        - "interface interface01 create -type ethernet-dpdk-phy -port-number 0"
+        - "interface interface02 create -type ethernet-dpdk-phy -port-number 1"
+        - "interface interface03 create -type ethernet-dpdk-phy -port-number 2"
+        - "port port01 create -interface interface01"
+        - "port port02 create -interface interface02"
+        - "port port03 create -interface interface03"
+        - "bridge bridge01 create -controller controller01 -port port01 2 -port port02 1 -dpid 0x1"
+        - "bridge bridge01 enable"
 
 - hosts: target2
   vars_files:
@@ -38,29 +28,19 @@
   sudo: yes
   remote_user: "{{ user }}"
   tasks:
-    - shell: echo > /usr/local/etc/lagopus/lagopus.conf
-    - shell: echo "{{ item }}" >> /usr/local/etc/lagopus/lagopus.conf
+    - shell: echo > /usr/local/etc/lagopus/lagopus.dsl
+    - shell: echo "{{ item }}" >> /usr/local/etc/lagopus/lagopus.dsl
       with_items:
-        - "interface {"
-        - "	ethernet {"
-        - "		eth0;"
-        - "		eth1;"
-        - "		eth2;"
-        - "	}"
-        - "}"
-        - "bridge-domains {"
-        - "	br0 {"
-        - "		dpid 0.00:00:00:00:00:02;"
-        - "		port {"
-        - "			eth0;"
-        - "			eth1;"
-        - "			eth2;"
-        - "		}"
-        - "		controller {"
-        - "			{{ groups['target1'][0] }};"
-        - "		}"
-        - "	}"
-        - "}"
+        - "channel channel01 create -dst-addr {{ groups['target1'][0] }} -protocol tcp"
+        - "controller controller01 create -channel channel01 -role equal -connection-type main"
+        - "interface interface01 create -type ethernet-dpdk-phy -port-number 0"
+        - "interface interface02 create -type ethernet-dpdk-phy -port-number 1"
+        - "interface interface03 create -type ethernet-dpdk-phy -port-number 2"
+        - "port port01 create -interface interface01"
+        - "port port02 create -interface interface02"
+        - "port port03 create -interface interface03"
+        - "bridge bridge01 create -controller controller01 -port port01 2 -port port02 1 -dpid 0x2"
+        - "bridge bridge01 enable"
 
 - hosts: all
   vars_files:
