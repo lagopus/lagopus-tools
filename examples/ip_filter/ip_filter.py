@@ -26,7 +26,6 @@ from ryu.ofproto import ofproto_v1_3
 from ryu.lib import ofctl_v1_0
 from ryu.lib import ofctl_v1_2
 from ryu.lib import ofctl_v1_3
-from ryu.controller import network
 from ryu.controller import dpset
 
 from netaddr import valid_ipv4
